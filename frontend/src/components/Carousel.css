@@ -1,0 +1,46 @@
+.carousel {
+    position: relative;
+    height: 75vh; /* Adjust height as needed */
+    background-size: cover; /* Ensure background image covers the area */
+    background-position: center; /* Center the background image */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    transition: background-image 0.5s ease-in-out; /* Smooth background transition */
+    overflow: hidden; /* Ensure that the blurred background doesn't overflow */
+  }
+  
+  .carousel::after {
+    position: absolute;
+    top: 0;
+    left: 0; /* Start from the left */
+    right: 0; /* Extend to the right */
+    bottom: 0; /* Extend to the bottom */
+    content: '';
+    backdrop-filter: blur(15px); /* Increased blur effect for a smoother background */
+  }
+  
+  .swiper-slide {
+    transition: transform 0.5s ease; /* Smooth transition for scaling */
+  }
+  
+  .swiper-slide-active {
+    transform: scale(1.5); /* Scale up the active slide */
+  }
+  
+  .swiper-slide:not(.swiper-slide-active) {
+    transform: scale(0.5); /* Scale down inactive slides slightly for depth */
+  }
+  
+  .swiper-image {
+    width: 100%; /* Full width for the image */
+    height: 60vh; /* Fixed height for the image */
+    display: block; /* Remove bottom space in the image */
+    object-fit: cover; /* Ensure the image covers the slide */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); /* Softer drop shadow */
+    border-radius: 10px; /* Optional: Add rounded corners */
+    position: relative; /* Position relative to allow layering */
+    z-index: 100; /* Ensure the image is above the overlay */
+  }
+  
+ 
