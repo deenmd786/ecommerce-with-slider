@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: null // Holds user details (null if no user is logged in)
+  user: {
+    profilePic: null,
+    name: "Guest"
+  }
 };
 
 export const userSlice = createSlice({

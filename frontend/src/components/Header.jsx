@@ -4,13 +4,14 @@ import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUserDetail } from "../features/userSlice";
-import fetchData from "../utils/api"; // Assuming API utility is available
-import '../App.css'
+import fetchData from "../utils/api";
+import "../App.css";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((state) => state?.user?.user);
-  const [isDashVisible, setIsDashVisible] = useState(true); // State to manage dashboard visibility
+  const [isDashVisible, setIsDashVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -20,15 +21,22 @@ const Header = () => {
     toggleMobileMenu();
   };
 
-  // Handle Dashboard Toggle
-  const handleDashboardToggle = () => {
-    const newValue = !isDashVisible;
-    if (newValue) {
-      navigate("/admin-panel");
-    } else {
-      navigate("/");
+  // Handle Dashboard Access (Admin Panel)
+  const handleDashboard = () => {
+    if (!user) {
+      toast.error("Please log in first to access the Admin Panel");
+      return; // Prevent navigation if not logged in
     }
-    setIsDashVisible(newValue);
+    setIsDashVisible(!isDashVisible);
+    if (!isDashVisible) {
+      navigate('/');
+    }else{
+      if (user?.role === 'ADMIN') {
+        navigate("/admin-panel"); // Navigate only if the user is logged in
+      }else{
+        toast.error('Only Admin Can See!!!')
+      }
+    }
   };
 
   // Handle Logout
@@ -37,6 +45,7 @@ const Header = () => {
       await fetchData("/auth/logout", "POST", null, true);
       dispatch(clearUserDetail());
       navigate("/");
+      toast.success("Logged out successfully");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -49,7 +58,7 @@ const Header = () => {
   };
 
   return (
-    <header className="h-[10vh] bg-gray-900 relative">
+    <header className="h-[10vh] bg-gray-900">
       <nav className="container h-full text-white shadow-md mx-auto flex items-center justify-between p-2">
         {/* Logo */}
         <div className="text-xl font-bold">
@@ -71,12 +80,11 @@ const Header = () => {
 
         {/* Profile and Login/Logout */}
         <div className="flex items-center space-x-3 md:space-x-6">
-          <Link
-            to={isDashVisible ? "/" : "/admin-panel"}
+          <button
+            onClick={handleDashboard}
             className="flex items-center space-x-2 shadow-sm rounded-full cursor-pointer border-2 md:hover:border-gray-400 border-white p-1"
-            onClick={handleDashboardToggle}
           >
-            {user ? (
+            {user?.profilePic ? (
               <img
                 src={user.profilePic}
                 alt={user.name}
@@ -85,17 +93,17 @@ const Header = () => {
             ) : (
               <FaUser className="text-lg m-1" />
             )}
-          </Link>
+          </button>
           <CustomButton
             name={user ? "Logout" : "Login"}
             onClick={user ? handleLogoutClick : handleLoginClick}
-            className={'max-md:hidden'}
+            className={"max-md:hidden"}
           />
           <div className="md:hidden">
             {/* Mobile Menu Toggle */}
             <button
               onClick={toggleMobileMenu}
-              className={`menu-icon ${isOpen ? 'open' : ''}`}
+              className={`menu-icon ${isOpen ? "open" : ""}`}
             >
               <span></span>
               <span></span>
@@ -106,36 +114,37 @@ const Header = () => {
       </nav>
 
       {/* Mobile Menu */}
-      
-  <div className={`md:hidden bg-gray-900 text-white space-y-2 p-4 rounded-lg mobile-menu ${isOpen ? 'open' : ''}`}
-  >
-    <Link
-      to="/"
-      className="block hover:text-gray-400 transition duration-300"
-      onClick={toggleMobileMenu}
-    >
-      Home
-    </Link>
-    <Link
-      to="/about"
-      className="block hover:text-gray-400 transition duration-300"
-      onClick={toggleMobileMenu}
-    >
-      About
-    </Link>
-    <Link
-      to="/contact"
-      className="block hover:text-gray-400 transition duration-300"
-      onClick={toggleMobileMenu}
-    >
-      Contact
-    </Link>
-    <CustomButton
-      name={user ? "Logout" : "Login"}
-      onClick={user ? handleLogoutClick : handleLoginClick}
-    />
-  </div>
-
+      <div
+        className={`md:hidden bg-gray-900 text-white space-y-2 p-4 rounded-lg mobile-menu ${
+          isOpen ? "open" : ""
+        }`}
+      >
+        <Link
+          to="/"
+          className="block hover:text-gray-400 transition duration-300"
+          onClick={toggleMobileMenu}
+        >
+          Home
+        </Link>
+        <Link
+          to="/about"
+          className="block hover:text-gray-400 transition duration-300"
+          onClick={toggleMobileMenu}
+        >
+          About
+        </Link>
+        <Link
+          to="/contact"
+          className="block hover:text-gray-400 transition duration-300"
+          onClick={toggleMobileMenu}
+        >
+          Contact
+        </Link>
+        <CustomButton
+          name={user ? "Logout" : "Login"}
+          onClick={user ? handleLogoutClick : handleLoginClick}
+        />
+      </div>
     </header>
   );
 };

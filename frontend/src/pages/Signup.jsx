@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import fetchData from "../utils/api";
 import { toast } from "react-toastify";
-import convertToBase64 from "../components/Bash64Image";
+import convertToBase64 from "../helper/Bash64Image";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ const Signup = () => {
     email: "",
     password: "",
     profilePic: "",
+    role: "GENERAL",
   });
   
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +46,7 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    const { name, email, password, profilePic } = formData;
+    const { name, email, password, profilePic, role } = formData;
 
     // Basic validation
     if (!name || !email || !password) {
@@ -59,7 +60,8 @@ const Signup = () => {
         name,
         email,
         password,
-        profilePic, // Send base64 profile image as profile picture
+        profilePic,
+        role,
       });
 
       if (response.message && response.message !== "User already exists") {
@@ -75,7 +77,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex p-3 h-screen bg-gray-100">
+    <div className="flex justify-center p-3 h-screen bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <div className="flex flex-col items-center justify-center md:mb-6">
           <div className="border-2 border-gray-950 rounded-full w-24 h-24 flex items-center justify-center relative overflow-hidden">
@@ -106,7 +108,7 @@ const Signup = () => {
             <input
               type="text"
               name="name"
-              className="w-full p-2 border rounded focus:outline-none"
+              className="w-full p-2 border rounded focus:outline-none capitalize"
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}

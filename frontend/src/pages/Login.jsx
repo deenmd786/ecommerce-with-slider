@@ -41,7 +41,7 @@ const Login = () => {
 
     try {
       const  response = await fetchData('/auth/login', 'POST', { email, password }, true);
-      dispatch(setUserDetail(response.user));
+      dispatch(setUserDetail(response.user.user));
       
       setError(''); // Clear error on success
       // Redirect or perform any additional actions after successful login
@@ -53,7 +53,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center min-h-[60vh] p-3 md:mt-12 bg-gray-100">
+    <div className="flex justify-center min-h-[60vh] md:mt-12 bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6">Login</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
