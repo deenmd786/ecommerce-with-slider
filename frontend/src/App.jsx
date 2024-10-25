@@ -11,20 +11,21 @@ import Footer from './components/Footer';
 
 const App = () => {
   const dispatch = useDispatch();
-
   useEffect(() => {    
     const getUserDetails = async () => {
       try {
         const user = await fetchData('/auth/userdetail', 'GET', null, true);
         dispatch(setUserDetail(user));        
+        
       } catch (error) {
+       
         console.error('Error fetching user details:', error); // Log any errors
+        
       }
     };
   
     getUserDetails();
   }, [dispatch]);
-   // Empty dependency array means this runs once on mount
 
   return (
     <Router>

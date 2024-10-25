@@ -4,7 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import fetchData from "../utils/api";
 import { toast } from "react-toastify";
-import convertToBase64 from "../helper/Bash64Image";
+import convertToBase64 from "../utils/Bash64Image";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const Signup = () => {
 
     try {
       // Send signup data with profile image (if provided)
-      const response = await fetchData("/auth/register", "POST", {
+      const response = await fetchData('/auth/register', 'POST', {
         name,
         email,
         password,
@@ -77,7 +77,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center p-3 h-screen bg-gray-100">
+    <div className="flex justify-center p-3 h-screen bg-gray-100 z-0">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <div className="flex flex-col items-center justify-center md:mb-6">
           <div className="border-2 border-gray-950 rounded-full w-24 h-24 flex items-center justify-center relative overflow-hidden">
@@ -141,7 +141,7 @@ const Signup = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
+              className="absolute inset-y-0 right-0 px-3 pt-8 text-gray-600"
             >
               {showPassword ? "Hide" : "Show"}
             </button>

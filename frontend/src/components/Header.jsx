@@ -1,17 +1,16 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CustomButton from "./CustomButton";
 import { FaUser } from "react-icons/fa";
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUserDetail } from "../features/userSlice";
 import fetchData from "../utils/api";
-import "../App.css";
 import { toast } from "react-toastify";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((state) => state?.user?.user);
-  const [isDashVisible, setIsDashVisible] = useState(false);
+  const [isDashVisible, setIsDashVisible] = useState(false); // Toggle dashboard visibility
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,21 +21,19 @@ const Header = () => {
   };
 
   // Handle Dashboard Access (Admin Panel)
-  const handleDashboard = () => {
+  const handleDashboard = async () => {
     if (!user) {
       toast.error("Please log in first to access the Admin Panel");
-      return; // Prevent navigation if not logged in
+      return;
     }
+
+    if (user.role !== "ADMIN") {
+      toast.error("Only Admin Can See!!!");
+      return;
+    }
+
+    navigate(isDashVisible ? "/" : "/admin-panel");
     setIsDashVisible(!isDashVisible);
-    if (!isDashVisible) {
-      navigate('/');
-    }else{
-      if (user?.role === 'ADMIN') {
-        navigate("/admin-panel"); // Navigate only if the user is logged in
-      }else{
-        toast.error('Only Admin Can See!!!')
-      }
-    }
   };
 
   // Handle Logout
@@ -58,22 +55,28 @@ const Header = () => {
   };
 
   return (
-    <header className="h-[10vh] bg-gray-900">
+    <header className="h-[10vh] bg-gray-900 shadow-xl">
       <nav className="container h-full text-white shadow-md mx-auto flex items-center justify-between p-2">
         {/* Logo */}
         <div className="text-xl font-bold">
           <Link to="/">MyApp</Link>
         </div>
 
-        {/* Desktop Links - Centered Navigation */}
+        {/* Desktop Links */}
         <div className="hidden md:flex space-x-6 justify-center flex-1">
           <Link to="/" className="hover:text-gray-400 transition duration-300">
             Home
           </Link>
-          <Link to="/about" className="hover:text-gray-400 transition duration-300">
+          <Link
+            to="/about"
+            className="hover:text-gray-400 transition duration-300"
+          >
             About
           </Link>
-          <Link to="/contact" className="hover:text-gray-400 transition duration-300">
+          <Link
+            to="/contact"
+            className="hover:text-gray-400 transition duration-300"
+          >
             Contact
           </Link>
         </div>
@@ -95,12 +98,16 @@ const Header = () => {
             )}
           </button>
           <CustomButton
-            name={user ? "Logout" : "Login"}
-            onClick={user ? handleLogoutClick : handleLoginClick}
+            name={user && user.name !== "guest" ? "Logout" : "Login"}
+            onClick={
+              user && user.name !== "guest"
+                ? handleLogoutClick
+                : handleLoginClick
+            }
             className={"max-md:hidden"}
           />
+
           <div className="md:hidden">
-            {/* Mobile Menu Toggle */}
             <button
               onClick={toggleMobileMenu}
               className={`menu-icon ${isOpen ? "open" : ""}`}
@@ -115,7 +122,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden bg-gray-900 text-white space-y-2 p-4 rounded-lg mobile-menu ${
+        className={`md:hidden bg-gray-900 text-white space-y-2 p-4 relative z-10 rounded-lg mobile-menu ${
           isOpen ? "open" : ""
         }`}
       >
@@ -141,8 +148,12 @@ const Header = () => {
           Contact
         </Link>
         <CustomButton
-          name={user ? "Logout" : "Login"}
-          onClick={user ? handleLogoutClick : handleLoginClick}
+          name={user && user.name !== "guest" ? "Logout" : "Login"}
+          onClick={
+            user && user.name !== "guest"
+              ? handleLogoutClick
+              : handleLoginClick
+          }
         />
       </div>
     </header>

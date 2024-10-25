@@ -1,5 +1,5 @@
 // Shimmer.js
-const Shimmer = () => {
+const AllUserShimmer = () => {
   return (
     <div className="animate-pulse">
       <div className="flex flex-col space-y-4">
@@ -16,4 +16,4 @@ const Shimmer = () => {
   );
 };
 
-export default Shimmer;
+export default AllUserShimmer;

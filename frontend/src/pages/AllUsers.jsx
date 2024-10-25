@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import fetchData from "../utils/api";
 import moment from "moment";
 import { MdModeEdit } from "react-icons/md";
-import Shimmer from "../ui/AllUserShimmer";
 import ChangeUserRoll from "../components/ChangeUserRoll";
+import AllUserShimmer from "../ui/AllUserShimmer";
 
 function AllUsers() {
   const [allUserData, setAllUserData] = useState([]);
@@ -39,12 +39,12 @@ function AllUsers() {
   };
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+    <div className="p-2 md:p-4 lg:p-6 max-w-7xl mx-auto">
       <h2 className="text-lg md:text-xl lg:text-2xl font-bold mb-4">All Users</h2>
 
       {/* Show shimmer while loading */}
       {loading ? (
-        <Shimmer />
+        <AllUserShimmer />
       ) : (
         // Display table if user data is available
         <div className="overflow-x-auto capitalize">

@@ -38,7 +38,8 @@ const loginUser = async (req, res) => {
       // Send token in cookie
       res.cookie('token', token, {
         httpOnly: true, // Secure cookie
-        sameSite: 'strict', // Optional, for CSRF protection
+        secure: true,
+        sameSite: 'None', // Optional, for CSRF protection
         maxAge: 60 * 60 * 1000, // 1 hour expiry
       });
   

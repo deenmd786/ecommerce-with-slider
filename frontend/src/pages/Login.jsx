@@ -4,12 +4,11 @@ import { Link, useNavigate } from 'react-router-dom'; // Import Link for navigat
 import fetchData from '../utils/api'; // Ensure this import is correct
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { setUserDetail } from '../features/userSlice';
+import { clearUserDetail, setUserDetail } from '../features/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // Consolidating email and password into one object
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -27,6 +26,27 @@ const Login = () => {
     }));
   };
 
+  // Function to simulate session expiration after 1 minute
+  const startSessionTimeout = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('Session expired');
+      }, 3600000); // 60 seconds = 60000 milliseconds
+    });
+  };
+
+  // Function to handle session expiration and redirect
+  const handleSessionExpiration = async () => {
+    try {
+      const result = await startSessionTimeout(); // Wait for session to expire
+      toast.info(result); // Show session expiration message
+      dispatch(clearUserDetail());
+      navigate('/login'); // Redirect to login page
+    } catch (err) {
+      console.error('Error handling session expiration:', err);
+    }
+  };
+
   // Login function
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,21 +60,21 @@ const Login = () => {
     }
 
     try {
-      const  response = await fetchData('/auth/login', 'POST', { email, password }, true);
+      const response = await fetchData('/auth/login', 'POST', { email, password }, true);
       dispatch(setUserDetail(response.user.user));
-      
       setError(''); // Clear error on success
-      // Redirect or perform any additional actions after successful login
       toast.success('Logging in successfully.');
-      navigate('/');
+      navigate('/'); // Redirect or perform any additional actions after successful login
+      // Start session timeout after login
+      handleSessionExpiration(); 
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.'); // Handle fetch errors
     }
   };
-
+  
   return (
-    <div className="flex justify-center min-h-[60vh] md:mt-12 bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <div className="flex justify-center sm:items-center min-h-[75vh] p-3 bg-gray-200">
+      <div className="bg-white min-h-[60vh] p-8 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6">Login</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleLogin}>
@@ -84,7 +104,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 px-3 py-2 text-gray-600"
+              className="absolute inset-y-0 right-0 px-3 pt-8 text-gray-600"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
