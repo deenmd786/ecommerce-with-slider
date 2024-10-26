@@ -64,4 +64,36 @@ const updateProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getProduct, updateProduct };
+// get Product by category wise...
+const getCategoryProduct = async (req, res) => {
+  try {
+
+    // Find products by category ID
+    const productCategory = await Product.distinct("category");
+
+    // array of storing one product of each category
+    const productsByCategory = [];
+    
+    for(const category of productCategory){
+      const products = await Product.findOne({ category });
+
+      if (products) {
+        productsByCategory.push(products);
+      }
+      
+    }
+    // Check if any products were found
+    if (productCategory.length === 0) {
+      return res.status(404).json({ message: "No products found for this category" });
+    }
+
+    // Return the found products
+    res.status(200).json({ message: "Products retrieved successfully", data: productsByCategory });
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Failed to get products" });
+  }
+};
+
+
+
+module.exports = { createProduct, getProduct, updateProduct, getCategoryProduct };

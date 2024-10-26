@@ -30,7 +30,7 @@ const Login = () => {
   const startSessionTimeout = () => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve('Session expired');
+        resolve('Session Expired!');
       }, 3600000); // 60 seconds = 60000 milliseconds
     });
   };
@@ -41,7 +41,7 @@ const Login = () => {
       const result = await startSessionTimeout(); // Wait for session to expire
       toast.info(result); // Show session expiration message
       dispatch(clearUserDetail());
-      navigate('/login'); // Redirect to login page
+      navigate('/login');
     } catch (err) {
       console.error('Error handling session expiration:', err);
     }

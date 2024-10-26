@@ -25,18 +25,39 @@ function AdminEditProduct({ onClose, importData, fetchFuc }) {
   const [openFullScreenImage, setOpenFullScreenImage] = useState(false);
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState("");
   const [loadingStates, setLoadingStates] = useState([]);
+  const [isSelect, setIsSelect] = useState(false);
 
   const handleOnChange = ({ target: { name, value } }) =>
     setData((prevData) => ({ ...prevData, [name]: value }));
 
   const handleUploadProduct = async ({ target: { files } }) => {
-    const file = files[0];
-    setLoadingStates((prevStates) => [...prevStates, true]);
-    const { url } = await uploadImage(file);
+    if (files.length === 0) {
+      setIsSelect(false);
+      return;
+    }
+
+    setIsSelect(true);
+
+    // Set loading states only for the new files being uploaded
+    const newLoadingStates = Array(files.length).fill(true);
+    setLoadingStates((prevStates) => [...prevStates, ...newLoadingStates]); // Append to existing loading states
+
+    const uploadedUrls = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        const { url } = await uploadImage(file);
+        uploadedUrls.push(url);
+        handleImageLoad((prevStates) => prevStates.length + i); // Use the index for the current upload
+      } catch (error) {
+        toast.error(`Failed to upload image ${i + 1}: ${error.message}`);
+      }
+    }
 
     setData((prevData) => ({
       ...prevData,
-      productImage: [...prevData.productImage, url],
+      productImage: [...prevData.productImage, ...uploadedUrls],
     }));
   };
 
@@ -45,7 +66,7 @@ function AdminEditProduct({ onClose, importData, fetchFuc }) {
     try {
       const response = await fetchData(
         `/product/update-product/${importData._id}`,
-        'POST',
+        "POST",
         data,
         true
       );
@@ -177,37 +198,39 @@ function AdminEditProduct({ onClose, importData, fetchFuc }) {
                   className="hidden"
                   onChange={handleUploadProduct}
                   accept="image/*"
-                  
+                  multiple
                 />
               </label>
 
-              <div className="flex gap-2 sm:overflow-x-auto">
-              {data.productImage.map((imgUrl, index) => (
-                <div key={index} className="relative shrink-0">
-                  {loadingStates[index] && <SingleImageShimmer />}
-                  <div className="relative group">
-                    <img
-                      src={imgUrl}
-                      alt="Product Preview"
-                      className={`w-20 h-20 object-cover cursor-pointer rounded-lg shadow-lg ${
-                        loadingStates[index] ? "invisible" : "visible"
-                      }`}
-                      onClick={() => {
-                        setFullScreenImageUrl(imgUrl);
-                        setOpenFullScreenImage(true);
-                      }}
-                      onLoad={() => handleImageLoad(index)}
-                      onError={() => handleImageLoad(index)}
-                    />
-                    <div
-                      className="absolute bottom-1 right-1 p-1 cursor-pointer hidden rounded-full text-white bg-red-600 group-hover:block"
-                      onClick={() => handleDeleteProductImage(index)}
-                    >
-                      <MdDelete />
+              <div >
+                <div className="flex space-x-2 overflow-x-auto overflow-y-hidden">
+                {data.productImage.map((imgUrl, index) => (
+                  <div key={index} className="relative shrink-0 ">
+                    {loadingStates[index] && isSelect && <SingleImageShimmer />}
+                    <div className="relative group">
+                      <img
+                        src={imgUrl}
+                        alt="Product Preview"
+                        className={`w-20 h-20 object-cover cursor-pointer rounded-lg shadow-lg ${
+                          loadingStates[index] ? "invisible" : "visible"
+                        }`}
+                        onClick={() => {
+                          setFullScreenImageUrl(imgUrl);
+                          setOpenFullScreenImage(true);
+                        }}
+                        onLoad={() => handleImageLoad(index)}
+                        onError={() => handleImageLoad(index)}
+                      />
+                      <div
+                        className="absolute bottom-1 right-1 p-1 cursor-pointer hidden rounded-full text-white bg-red-600 group-hover:block"
+                        onClick={() => handleDeleteProductImage(index)}
+                      >
+                        <MdDelete />
+                      </div>
                     </div>
                   </div>
+                ))}
                 </div>
-              ))}
               </div>
             </div>
           </div>

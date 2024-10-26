@@ -18,7 +18,7 @@ const DisplayImage = ({ onClose, imgUrl }) => {
           src={imgUrl}
           alt="Full Screen Display"
           className="max-w-full max-h-full px-3 object-contain"
-          style={{ width: 'auto', height: 'auto' }}
+          style={{ width: "520px", height: "520px" }} // Inline styles to fix the size
         />
       </div>
     </div>
