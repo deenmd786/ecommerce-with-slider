@@ -55,8 +55,8 @@ const Header = () => {
   };
 
   return (
-    <header className="h-[10vh] bg-gray-900 shadow-xl">
-      <nav className="container h-full text-white shadow-md mx-auto flex items-center justify-between p-2">
+    <header className="h-16 bg-gray-900 fixed w-full z-50 shadow-xl">
+      <nav className="container h-full text-white shadow-md mx-auto flex items-center justify-between px-4">
         {/* Logo */}
         <div className="text-xl font-bold">
           <Link to="/">MyApp</Link>

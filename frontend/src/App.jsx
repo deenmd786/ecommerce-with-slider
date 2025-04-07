@@ -31,7 +31,7 @@ const App = () => {
     <Router>
       <Header />
       <ToastContainer />
-      <main className='min-h-[75vh]'>
+      <main className=' bg-slate-100 pt-16'>
       <AppRoutes />
       </main>
       <Footer />

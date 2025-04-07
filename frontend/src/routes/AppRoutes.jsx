@@ -5,6 +5,8 @@ import Home from '../pages/Home';
 import AdminPanel from '../pages/AdminPanel';
 import AllUsers from '../pages/AllUsers';
 import AllProducts from '../pages/AllProducts';
+import CategoryProduct from '../pages/CategoryProduct';
+import ProductDetails from '../pages/ProductDetails';
 
 const AppRoutes = () => {
   return (
@@ -12,6 +14,8 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/product-category/:category" element={<CategoryProduct />} />
+      <Route path="/product-details/:id" element={<ProductDetails />} />
       {/* Parent Route for Admin Panel */}
       <Route path="/admin-panel" element={<AdminPanel />}>
         {/* Nested Child Routes under Admin Panel */}

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Import Link for navigat
 import fetchData from '../utils/api'; // Ensure this import is correct
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { clearUserDetail, setUserDetail } from '../features/userSlice';
+import { setUserDetail } from '../features/userSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,26 +26,7 @@ const Login = () => {
     }));
   };
 
-  // Function to simulate session expiration after 1 minute
-  const startSessionTimeout = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('Session Expired!');
-      }, 3600000); // 60 seconds = 60000 milliseconds
-    });
-  };
-
-  // Function to handle session expiration and redirect
-  const handleSessionExpiration = async () => {
-    try {
-      const result = await startSessionTimeout(); // Wait for session to expire
-      toast.info(result); // Show session expiration message
-      dispatch(clearUserDetail());
-      navigate('/login');
-    } catch (err) {
-      console.error('Error handling session expiration:', err);
-    }
-  };
+  
 
   // Login function
   const handleLogin = async (e) => {
@@ -66,7 +47,6 @@ const Login = () => {
       toast.success('Logging in successfully.');
       navigate('/'); // Redirect or perform any additional actions after successful login
       // Start session timeout after login
-      handleSessionExpiration(); 
     } catch (error) {
       setError(error.message || 'Login failed. Please try again.'); // Handle fetch errors
     }
